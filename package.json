@@ -1,0 +1,17 @@
+{
+  "name": "maintenance_map",
+  "version": "1.0.0",
+  "description": "tool used to plot real world locations that may need maintenance or are important to a larger system",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.3.0",
+    "mysql": "^2.18.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
+  }
+}
