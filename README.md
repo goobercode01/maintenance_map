@@ -3,8 +3,8 @@
 the focus for the scope of this project was on the mta's metro-north railroad, as it is close to where i grew up and has public track maps available online from circa 2015. 
 
 required node packages:
--sqlite/sqlite3
--express
+- sqlite/sqlite3
+- express
 
 how to use:
 
