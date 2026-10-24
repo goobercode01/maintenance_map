@@ -11,4 +11,4 @@ how to use:
 1. init a new node.js project
 2. ensure you have all node packages installed as listed above
 3. insert this repository into your node project with your packages
-4. in the directory, run `npm start` and go to [Hyperlink](http://localhost:3000/)
+4. in the directory, run `npm start` and go to [localhost:3000](http://localhost:3000/)
