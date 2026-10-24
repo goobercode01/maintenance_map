@@ -4,6 +4,7 @@
   "description": "tool used to plot real world locations that may need maintenance or are important to a larger system",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": ""
   },
   "author": "",
