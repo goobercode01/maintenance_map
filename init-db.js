@@ -1,8 +1,10 @@
+const path = require('node:path');
 const { DatabaseSync } = require('node:sqlite');
-const database = new DatabaseSync('database.db');
+
+const database = new DatabaseSync(path.join(__dirname, 'database.db'));
 
 database.exec(`
-    CREATE TABLE IF NOT EXISTS locations (
+    CREATE TABLE locations (
         locationID INTEGER PRIMARY KEY AUTOINCREMENT,
         type TEXT,
         title TEXT,

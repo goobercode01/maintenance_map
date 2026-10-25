@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
-    <title>mapper</title>
+    <title>maintenance map</title>
 </head>
 
 <body>
@@ -25,7 +25,8 @@
             <div class="card m-2">
                 <div class="card-body" align="center">
                     <div id="title">
-                        <h4><b>Click a pin or the map.</b></h4>
+                        <input id="titleBox" class="form-control form-control-lg" type="text"
+                            placeholder="Click a pin or the map." readonly>
                     </div>
                     <hr>
                     <small id="id">ID: </small>
@@ -58,7 +59,8 @@
                         <hr>
                         <form id="desc">
                             <label class="py-2">Description:</label>
-                            <textarea class="form-control" placeholder="No Data" rows="3" readonly></textarea>
+                            <textarea id="descBox" class="form-control" placeholder="No Data" rows="3"
+                                readonly></textarea>
                         </form>
                     </div>
                 </div>
@@ -89,7 +91,8 @@
                     <hr>
                     <form id="maintDesc">
                         <label class="py-2">Maintenance Description:</label>
-                        <textarea class="form-control" placeholder="No Data" rows="3" readonly></textarea>
+                        <textarea id="maintDescBox" class="form-control" placeholder="No Data" rows="3"
+                            readonly></textarea>
                     </form>
                 </div>
             </div>
@@ -97,13 +100,12 @@
             <div class="card m-2">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6" align="center">
-                            <div class="btn btn-primary w-100">Save</div>
+                        <div id="save" class="col-7" align="center">
+                            <button class="btn btn-primary w-100 disabled">Save</button>
                         </div>
-                        <div class="col-6" align="center">
-                            <div class="btn btn-danger w-100">Reset</div>
+                        <div id="delete" class="col-5" align="center">
+                            <button class="btn btn-danger w-100 disabled">Delete</button>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -134,6 +136,12 @@
     </script>
     <script>
         var tempMarker;
+        var tempLat;
+        var tempLong;
+        var tempID;
+        var typeState;
+        var maintState;
+
         async function loadData() {
             try {
                 let response = await fetch("api/locations");
@@ -150,7 +158,7 @@
                         if (tempMarker != undefined) {
                             tempMarker.remove();
                         }
-                        document.getElementById("title").innerHTML = `<h4 id="title"><b>${location.title}<b/></h4>`;
+                        document.getElementById("title").innerHTML = `<input id="titleBox" class="form-control form-control-lg" type="text" value="${location.title}">`;
                         document.getElementById("type").innerHTML = ` 
                             <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                             ${location.type}</button>
@@ -161,13 +169,16 @@
                                     <a class="dropdown-item" href="#">Bridge</a>
                                     <a class="dropdown-item" href="#">Other</a>
                             </div>`;
-
+                        typeState = location.type;
                         document.getElementById("lat").innerHTML = `Lat: <b> ${location.lat}</b>`;
                         document.getElementById("long").innerHTML = `Long: <b> ${location.long}</b>`;
+                        tempLat = location.lat;
+                        tempLong = location.long;
                         document.getElementById("desc").innerHTML = ` <label>Description:</label>
-                        <textarea class="form-control" rows="3">${location.description}</textarea>`;
+                        <textarea id = "descBox" class="form-control" rows="3">${location.description}</textarea>`;
                         document.getElementById("id").textContent = `ID: ${location.locationID}`;
-                        document.getElementById("flag").innerHTML =`
+                        tempID = location.locationID;
+                        document.getElementById("flag").innerHTML = `
                         <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                             ${location.maintenanceFlag}</button>
                             <div class="dropdown-menu">
@@ -175,11 +186,13 @@
                                 <a class="dropdown-item" href="#">In Progress</a>
                                 <a class="dropdown-item" href="#">Needed</a>
                             </div>`
-
-                        document.getElementById("maintDesc").innerHTML=`
+                        maintState = location.maintenanceFlag;
+                        document.getElementById("maintDesc").innerHTML = `
                             <label class="py-2">Maintenance Description:</label>
-                            <textarea class="form-control" placeholder="" rows="3">${location.maintenanceDescription}</textarea>`
+                            <textarea id = "maintDescBox" class="form-control" placeholder="" rows="3">${location.maintenanceDescription}</textarea>`
+                        document.getElementById("delete").innerHTML = `<button class="btn btn-danger w-100">Delete</button>`
                     })
+
 
                 })
 
@@ -191,9 +204,10 @@
         }
         loadData();
 
+
         function onMapClick(e) {
             // alert("You clicked the map at " + e.latlng);
-            document.getElementById("title").innerHTML = `<h4 id="title"><b>No data</b></h4>`;
+            document.getElementById("title").innerHTML = `<input id="titleBox" class="form-control form-control-lg" type="text" placeholder="No Data">`;
             document.getElementById("type").innerHTML = ` 
                             <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                             No Data</button>
@@ -206,21 +220,25 @@
                             </div>`;
             document.getElementById("lat").innerHTML = `Lat: <b> ${e.latlng.lat}</b>`;
             document.getElementById("long").innerHTML = `Long: <b> ${e.latlng.lng}</b>`
+            tempLat = e.latlng.lat;
+            tempLong = e.latlng.lng;
+            tempID = 0;
             document.getElementById("desc").innerHTML = ` <label>Description:</label>
-                        <textarea class="form-control" placeholder="None" rows="3"></textarea>`;
+                        <textarea id = "descBox" class= "form-control" placeholder="None" rows="3"></textarea>`;
             document.getElementById("id").textContent = "ID: None";
-            document.getElementById("flag").innerHTML =`
+            document.getElementById("flag").innerHTML = `
                         <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">No Data</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Not Needed</a>
                                 <a class="dropdown-item" href="#">In Progress</a>
                                 <a class="dropdown-item" href="#">Needed</a>
                             </div>`
-
-                        document.getElementById("maintDesc").innerHTML=`
+            maintState = "No Data";
+            typeState = "Other";
+            document.getElementById("maintDesc").innerHTML = `
                             <label class="py-2">Maintenance Description:</label>
-                            <textarea class="form-control" placeholder="No Data" rows="3"></textarea>`
-
+                            <textarea id = "maintDescBox" class="form-control" placeholder="No Data" rows="3"></textarea>`
+            document.getElementById("delete").innerHTML = `<button class="btn btn-danger w-100 disabled">Delete</button>`
 
             if (tempMarker != undefined) {
                 tempMarker.remove();
@@ -228,7 +246,101 @@
             tempMarker = L.marker(e.latlng).addTo(map);
         }
 
+        function onChange() {
+            document.getElementById("save").innerHTML = `<button class="btn btn-primary w-100">Save</button>`;
+        }
+
+
+        function updateDropdown(containerId, onSelect) {
+            const dropdown = document.getElementById(containerId);
+
+            dropdown.addEventListener('click', (event) => {
+                if (dropdown.disabled || dropdown.classList.contains('disabled')) {
+                    event.preventDefault();
+                    return;
+                }
+                const option = event.target.closest('.dropdown-item');
+                if (option == null || dropdown.contains(option) == false) {
+                    event.preventDefault();
+                    return;
+                }
+
+                const selectedValue = option.textContent.trim();
+                dropdown.querySelector('.dropdown-toggle').textContent = selectedValue;
+                onSelect(selectedValue);
+                onChange();
+            })
+        }
+
+        updateDropdown('type', (value) => {
+            typeState = value;
+        });
+        updateDropdown('flag', (value) => {
+            maintState = value;
+        });
+
+        document.addEventListener("input", (event) => {
+            if (event.target.matches("input, textarea")) {
+                onChange();
+            }
+        });
+
+        // this is the most of the ai use for this project, i really have no clue how this part works and had to use it for heavy guidance for the saving/deletion of db entries
+        async function onSave(e) {
+            const isNew = tempID === undefined || tempID === 0;
+
+            const response = await fetch(
+                isNew ? '/api/locations' : `/api/locations/${tempID}`,
+                {
+                    method: isNew ? 'POST' : 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: document.getElementById('titleBox').value,
+                        type: typeState,
+                        lat: tempLat,
+                        long: tempLong,
+                        description: document.getElementById('descBox').value,
+                        maintenanceFlag: maintState,
+                        maintenanceDescription: document.getElementById('maintDescBox').value
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                const details = await response.text();
+                throw new Error(`Save failed: ${response.status} ${details}`);
+            }
+            location.reload();
+        }
+
         map.on('click', onMapClick);
+        save.addEventListener('click', function (event) {
+            if (this.disabled || this.classList.contains('disabled')) {
+                event.preventDefault();
+                return;
+            }
+            onSave(event);
+        });
+
+        document.getElementById('delete').addEventListener('click', async (event) => {
+            if (!event.target.closest('button') || tempID == null || tempID === 0) return;
+
+            if (!confirm('Delete this location?')) return;
+
+            const response = await fetch(`/api/locations/${tempID}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                const details = await response.text();
+                console.error(`Delete failed: ${response.status}`, details);
+                return;
+            }
+
+            location.reload();
+        });
+
+
     </script>
 
 </body>
