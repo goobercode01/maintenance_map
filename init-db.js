@@ -16,7 +16,7 @@ database.exec(`
 
 database.exec(`
     INSERT INTO locations (type, title, lat, long, description, maintenanceFlag, maintenanceDescription)
-    VALUES('Control Point', 'CP 216', 40.9078139, -73.7879556, 'Merge point between MNR and AMTK services', 'No Maintenance', 'No maintenance.')
+    VALUES('Control Point', 'CP 216', 40.9078139, -73.7879556, 'Merge point between MNR and AMTK services', 'Not Needed', 'No maintenance.')
     `)
 
 database.close();

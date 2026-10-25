@@ -35,32 +35,60 @@
                 <div class="card-body">
                     <p id="lat">Lat: </p>
                     <p id="long">Long: </p>
-                    <p id="type">Type: </p>
                     <hr>
-                    <form id="desc">
-                        <label>Description:</label>
-                        <textarea class="form-control" placeholder="No Data" rows="3" readonly></textarea>
-                    </form>
+                    <div class="row">
+                        <div class="col-3 py-2">
+                            <label>Type:</label>
+                        </div>
+                        <div class="col-9 pb-3">
+                            <div id="type" class="dropdown" align="center">
+                                <button class="btn btn-secondary dropdown-toggle w-75" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown">
+                                    No Data
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item disabled" href="#">Station</a>
+                                    <a class="dropdown-item disabled" href="#">Catenary Structure</a>
+                                    <a class="dropdown-item disabled" href="#">Control Point</a>
+                                    <a class="dropdown-item disabled" href="#">Bridge</a>
+                                    <a class="dropdown-item disabled" href="#">Other</a>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <form id="desc">
+                            <label class="py-2">Description:</label>
+                            <textarea class="form-control" placeholder="No Data" rows="3" readonly></textarea>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="card m-2">
                 <div class="card-body">
-                    <label>Maintenance:</label>
-                    
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown">
-                            No Data
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item disabled" href="#">Not Needed</a>
-                            <a class="dropdown-item disabled" href="#">In Progress</a>
-                            <a class="dropdown-item disabled" href="#">Needed</a>
+                    <div class="row">
+                        <div class="col-3 py-2">
+                            <label>Maintenance:</label>
+                        </div>
+                        <div class="col-9">
+                            <div id="flag" class="dropdown" align="center">
+                                <button class="btn btn-secondary dropdown-toggle w-75" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown">
+                                    No Data
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item disabled" href="#">Not Needed</a>
+                                    <a class="dropdown-item disabled" href="#">In Progress</a>
+                                    <a class="dropdown-item disabled" href="#">Needed</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+
+
                     <hr>
                     <form id="maintDesc">
-                        <label>Maintenance Description:</label>
+                        <label class="py-2">Maintenance Description:</label>
                         <textarea class="form-control" placeholder="No Data" rows="3" readonly></textarea>
                     </form>
                 </div>
@@ -123,13 +151,34 @@
                             tempMarker.remove();
                         }
                         document.getElementById("title").innerHTML = `<h4 id="title"><b>${location.title}<b/></h4>`;
-                        document.getElementById("type").textContent = `Type: ${location.type}`;
+                        document.getElementById("type").innerHTML = ` 
+                            <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                            ${location.type}</button>
+                            <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Station</a>
+                                    <a class="dropdown-item" href="#">Catenary Structure</a>
+                                    <a class="dropdown-item" href="#">Control Point</a>
+                                    <a class="dropdown-item" href="#">Bridge</a>
+                                    <a class="dropdown-item" href="#">Other</a>
+                            </div>`;
+
                         document.getElementById("lat").innerHTML = `Lat: <b> ${location.lat}</b>`;
                         document.getElementById("long").innerHTML = `Long: <b> ${location.long}</b>`;
                         document.getElementById("desc").innerHTML = ` <label>Description:</label>
                         <textarea class="form-control" rows="3">${location.description}</textarea>`;
                         document.getElementById("id").textContent = `ID: ${location.locationID}`;
+                        document.getElementById("flag").innerHTML =`
+                        <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                            ${location.maintenanceFlag}</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Not Needed</a>
+                                <a class="dropdown-item" href="#">In Progress</a>
+                                <a class="dropdown-item" href="#">Needed</a>
+                            </div>`
 
+                        document.getElementById("maintDesc").innerHTML=`
+                            <label class="py-2">Maintenance Description:</label>
+                            <textarea class="form-control" placeholder="" rows="3">${location.maintenanceDescription}</textarea>`
                     })
 
                 })
@@ -145,12 +194,34 @@
         function onMapClick(e) {
             // alert("You clicked the map at " + e.latlng);
             document.getElementById("title").innerHTML = `<h4 id="title"><b>No data</b></h4>`;
-            document.getElementById("type").textContent = "Type: No Type";
+            document.getElementById("type").innerHTML = ` 
+                            <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                            No Data</button>
+                            <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Station</a>
+                                    <a class="dropdown-item" href="#">Catenary Structure</a>
+                                    <a class="dropdown-item" href="#">Control Point</a>
+                                    <a class="dropdown-item" href="#">Bridge</a>
+                                    <a class="dropdown-item" href="#">Other</a>
+                            </div>`;
             document.getElementById("lat").innerHTML = `Lat: <b> ${e.latlng.lat}</b>`;
             document.getElementById("long").innerHTML = `Long: <b> ${e.latlng.lng}</b>`
             document.getElementById("desc").innerHTML = ` <label>Description:</label>
                         <textarea class="form-control" placeholder="None" rows="3"></textarea>`;
             document.getElementById("id").textContent = "ID: None";
+            document.getElementById("flag").innerHTML =`
+                        <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">No Data</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Not Needed</a>
+                                <a class="dropdown-item" href="#">In Progress</a>
+                                <a class="dropdown-item" href="#">Needed</a>
+                            </div>`
+
+                        document.getElementById("maintDesc").innerHTML=`
+                            <label class="py-2">Maintenance Description:</label>
+                            <textarea class="form-control" placeholder="No Data" rows="3"></textarea>`
+
+
             if (tempMarker != undefined) {
                 tempMarker.remove();
             }
