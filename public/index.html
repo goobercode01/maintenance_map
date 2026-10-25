@@ -377,9 +377,21 @@
         }
         loadData();
 
+        function setEmptyValues(e){
 
-        function onMapClick(e) {
-            // alert("You clicked the map at " + e.latlng);
+            if(e.latlng){
+                eLat = e.latlng.lat;
+                eLong = e.latlng.lng
+                tempLat = e.latlng.lat;
+                tempLong = e.latlng.lng;
+            }
+            else{
+                eLat = "";
+                eLong = "";
+                tempLat = "";
+                tempLong = "";
+            }
+
             document.getElementById("title").innerHTML = `<input id="titleBox" class="form-control form-control-lg" type="text" placeholder="No Data">`;
             document.getElementById("type").innerHTML = ` 
                             <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">
@@ -391,10 +403,8 @@
                                     <a class="dropdown-item" href="#">Bridge</a>
                                     <a class="dropdown-item" href="#">Other</a>
                             </div>`;
-            document.getElementById("lat").innerHTML = `Lat: <b> ${e.latlng.lat}</b>`;
-            document.getElementById("long").innerHTML = `Long: <b> ${e.latlng.lng}</b>`
-            tempLat = e.latlng.lat;
-            tempLong = e.latlng.lng;
+            document.getElementById("lat").innerHTML = `Lat: <b> ${eLat}</b>`;
+            document.getElementById("long").innerHTML = `Long: <b> ${eLong}</b>`
             tempID = 0;
             document.getElementById("desc").innerHTML = ` <label>Description:</label>
                         <textarea id = "descBox" class= "form-control" placeholder="None" rows="2"></textarea>`;
@@ -413,10 +423,16 @@
                             <textarea id = "maintDescBox" class="form-control" placeholder="No Data" rows="3"></textarea>`
             document.getElementById("delete").innerHTML = `<button class="btn btn-danger w-100 disabled">Delete</button>`
             document.getElementById("save").innerHTML = `<button class="btn btn-primary w-100 disabled">Save</button>`
+
+        }
+
+        function onMapClick(e) {
+            // alert("You clicked the map at " + e.latlng);
+            setEmptyValues(e);
             if (tempMarker != undefined) {
                 tempMarker.remove();
             }
-            tempMarker = L.marker(e.latlng, { icon: greenIcon }).addTo(map);
+            tempMarker = L.marker(e.latlng, { icon: violetIcon }).addTo(map);
         }
 
         function onChange() {
@@ -509,7 +525,7 @@
                 console.error(`Delete failed: ${response.status}`, details);
                 return;
             }
-
+            setEmptyValues(event);
             loadData();
         });
 

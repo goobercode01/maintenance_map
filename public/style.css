@@ -1,1 +1,19 @@
-#map { height: 100vh;  }
+/* github copilot used to help with dynamic sizing of map to ensure mobile compatibility */
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+#map {
+  height: 100vh;
+  min-height: 350px;
+}
+
+@media (max-width: 991.98px) {
+  #map {
+    min-height: 25vh;
+    max-height: 75vh;
+  }
+}
