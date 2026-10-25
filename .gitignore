@@ -1,3 +1,6 @@
+# file adapted from the base node.js .gitignore file
+
+
 # database stuff
 database.db
 init-db-populated.js
