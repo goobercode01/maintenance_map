@@ -2,6 +2,8 @@
 
 the focus for the scope of this project was on the mta's metro-north railroad, as it is close to where i grew up and has public track maps available online from circa 2015. 
 
+this repo uses the leaflet color markers repository made by pointhi, which is availible [here](https://github.com/pointhi/leaflet-color-markers).
+
 required node packages:
 - sqlite/sqlite3
 - express

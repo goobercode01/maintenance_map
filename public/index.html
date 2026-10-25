@@ -130,10 +130,93 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="">
         </script>
 
+    <!--leaflet color markers-->
+    <script>
+    var blueIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-blue.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var goldIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-gold.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var redIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-red.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var greenIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-green.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var orangeIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-orange.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var yellowIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-yellow.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var violetIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-violet.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var greyIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-grey.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var blackIcon = new L.Icon({
+            iconUrl: './img/marker-icon-2x-black.png',
+            shadowUrl: './img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });</script>
     <script>
         var map = L.map('map').setView([40.908, -73.788], 18);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
     </script>
+
     <script>
         var tempMarker;
         var tempLat;
@@ -141,6 +224,32 @@
         var tempID;
         var typeState;
         var maintState;
+
+
+        function typeIconColor(type, maintenanceFlag) {
+            if(maintenanceFlag == "Needed"){
+                return redIcon;
+            }
+            if(maintenanceFlag == "In Progress"){
+                return goldIcon;
+            }
+            
+            switch(type){
+                case "Station":
+                    return blueIcon;
+                case "Control Point":
+                    return greenIcon; 
+                case "Catenary Structure":
+                    return blackIcon;
+                case "Bridge":
+                    return greyIcon;
+                default:
+                    return violetIcon;
+            }
+
+        }
+
+        const markerGroup = L.layerGroup().addTo(map);
 
         async function loadData() {
             try {
@@ -151,8 +260,10 @@
 
                 let data = await response.json();
 
+                markerGroup.clearLayers();
+
                 data.forEach((location) => {
-                    const marker = L.marker([location.lat, location.long]).addTo(map);
+                    const marker = L.marker([location.lat, location.long], { icon: typeIconColor(location.type,location.maintenanceFlag) }).addTo(markerGroup);
                     marker.bindPopup(location.title);
                     marker.on('click', () => {
                         if (tempMarker != undefined) {
@@ -243,7 +354,7 @@
             if (tempMarker != undefined) {
                 tempMarker.remove();
             }
-            tempMarker = L.marker(e.latlng).addTo(map);
+            tempMarker = L.marker(e.latlng, { icon: greenIcon }).addTo(map);
         }
 
         function onChange() {
@@ -285,6 +396,8 @@
             }
         });
 
+        map.on('click', onMapClick);
+
         // this is the most of the ai use for this project, i really have no clue how this part works and had to use it for heavy guidance for the saving/deletion of db entries
         async function onSave(e) {
             const isNew = tempID === undefined || tempID === 0;
@@ -310,10 +423,9 @@
                 const details = await response.text();
                 throw new Error(`Save failed: ${response.status} ${details}`);
             }
-            location.reload();
+            loadData();
         }
 
-        map.on('click', onMapClick);
         save.addEventListener('click', function (event) {
             if (this.disabled || this.classList.contains('disabled')) {
                 event.preventDefault();
@@ -337,7 +449,7 @@
                 return;
             }
 
-            location.reload();
+            loadData();
         });
 
 
