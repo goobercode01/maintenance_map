@@ -59,7 +59,7 @@
                         <hr>
                         <form id="desc">
                             <label class="py-2">Description:</label>
-                            <textarea id="descBox" class="form-control" placeholder="No Data" rows="3"
+                            <textarea id="descBox" class="form-control" placeholder="No Data" rows="2"
                                 readonly></textarea>
                         </form>
                     </div>
@@ -109,6 +109,42 @@
                     </div>
                 </div>
             </div>
+            <div class="card m-2">
+                <div id = "filterCard" class="card-body">
+                    <label>Filter:</label>
+                    <hr>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="station" checked>
+                        <label class="form-check-label" for="station" id="stationBox">
+                            Stations
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="control" checked>
+                        <label class="form-check-label" for="control" id="controlPointBox">
+                            Control Points
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="catenary" checked>
+                        <label class="form-check-label" for="catenary" id="catStructureBox">
+                            Catenary Structures
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="bridge" checked>
+                        <label class="form-check-label" for="bridge" id="bridgeBox">
+                            Bridge
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="other" checked>
+                        <label class="form-check-label" for="other" id="otherBox">
+                            Other
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -132,7 +168,7 @@
 
     <!--leaflet color markers-->
     <script>
-    var blueIcon = new L.Icon({
+        var blueIcon = new L.Icon({
             iconUrl: './img/marker-icon-2x-blue.png',
             shadowUrl: './img/marker-shadow.png',
             iconSize: [25, 41],
@@ -211,7 +247,9 @@
             iconAnchor: [12, 41],
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
-        });</script>
+        });
+    </script>
+
     <script>
         var map = L.map('map').setView([40.908, -73.788], 18);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
@@ -227,18 +265,18 @@
 
 
         function typeIconColor(type, maintenanceFlag) {
-            if(maintenanceFlag == "Needed"){
+            if (maintenanceFlag == "Needed") {
                 return redIcon;
             }
-            if(maintenanceFlag == "In Progress"){
+            if (maintenanceFlag == "In Progress") {
                 return goldIcon;
             }
-            
-            switch(type){
+
+            switch (type) {
                 case "Station":
                     return blueIcon;
                 case "Control Point":
-                    return greenIcon; 
+                    return greenIcon;
                 case "Catenary Structure":
                     return blackIcon;
                 case "Bridge":
@@ -247,6 +285,27 @@
                     return violetIcon;
             }
 
+        }
+
+        function isChecked(type){
+            var s = document.getElementById("station");
+            var cp = document.getElementById("control");
+            var cs = document.getElementById("catenary");
+            var b = document.getElementById("bridge");
+            var o = document.getElementById("other");
+
+            switch (type) {
+                case "Station":
+                    return s.checked;
+                case "Control Point":
+                    return cp.checked;
+                case "Catenary Structure":
+                    return cs.checked;
+                case "Bridge":
+                    return b.checked;
+                default:
+                    return o.checked;
+            }
         }
 
         const markerGroup = L.layerGroup().addTo(map);
@@ -263,7 +322,10 @@
                 markerGroup.clearLayers();
 
                 data.forEach((location) => {
-                    const marker = L.marker([location.lat, location.long], { icon: typeIconColor(location.type,location.maintenanceFlag) }).addTo(markerGroup);
+
+                    if (!isChecked(location.type)) return;
+
+                    const marker = L.marker([location.lat, location.long], { icon: typeIconColor(location.type, location.maintenanceFlag) }).addTo(markerGroup);
                     marker.bindPopup(location.title);
                     marker.on('click', () => {
                         if (tempMarker != undefined) {
@@ -286,7 +348,7 @@
                         tempLat = location.lat;
                         tempLong = location.long;
                         document.getElementById("desc").innerHTML = ` <label>Description:</label>
-                        <textarea id = "descBox" class="form-control" rows="3">${location.description}</textarea>`;
+                        <textarea id = "descBox" class="form-control" rows="2">${location.description}</textarea>`;
                         document.getElementById("id").textContent = `ID: ${location.locationID}`;
                         tempID = location.locationID;
                         document.getElementById("flag").innerHTML = `
@@ -335,7 +397,7 @@
             tempLong = e.latlng.lng;
             tempID = 0;
             document.getElementById("desc").innerHTML = ` <label>Description:</label>
-                        <textarea id = "descBox" class= "form-control" placeholder="None" rows="3"></textarea>`;
+                        <textarea id = "descBox" class= "form-control" placeholder="None" rows="2"></textarea>`;
             document.getElementById("id").textContent = "ID: None";
             document.getElementById("flag").innerHTML = `
                         <button class="btn btn-secondary dropdown-toggle w-75" type="button" id="dropdownMenuButton" data-toggle="dropdown">No Data</button>
@@ -350,7 +412,7 @@
                             <label class="py-2">Maintenance Description:</label>
                             <textarea id = "maintDescBox" class="form-control" placeholder="No Data" rows="3"></textarea>`
             document.getElementById("delete").innerHTML = `<button class="btn btn-danger w-100 disabled">Delete</button>`
-
+            document.getElementById("save").innerHTML = `<button class="btn btn-primary w-100 disabled">Save</button>`
             if (tempMarker != undefined) {
                 tempMarker.remove();
             }
@@ -391,7 +453,7 @@
         });
 
         document.addEventListener("input", (event) => {
-            if (event.target.matches("input, textarea")) {
+            if (event.target.matches("textarea") || event.target.classList.contains("form-control")) {
                 onChange();
             }
         });
@@ -426,14 +488,13 @@
             loadData();
         }
 
-        save.addEventListener('click', function (event) {
+        document.getElementById('save').addEventListener('click', function (event) {
             if (this.disabled || this.classList.contains('disabled')) {
                 event.preventDefault();
                 return;
             }
             onSave(event);
         });
-
         document.getElementById('delete').addEventListener('click', async (event) => {
             if (!event.target.closest('button') || tempID == null || tempID === 0) return;
 
@@ -452,6 +513,15 @@
             loadData();
         });
 
+        document.getElementById("filterCard").addEventListener('click', function(event) {
+            if(event.target.classList.contains("form-check-input")){
+                console.log("loading.")
+                loadData();
+            }
+            else{
+                event.preventDefault();
+            }
+        });
 
     </script>
 
