@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/locations', (request, response) => {
     const locations = database
-    .prepare('SELECT locationID, type, title, lat, long, description FROM locations').all()
+    .prepare('SELECT locationID, type, title, lat, long, description, maintenanceFlag, maintenanceDescription FROM locations').all()
     response.json(locations);
 });
 

@@ -1,5 +1,6 @@
-# database
+# database stuff
 database.db
+init-db-populated.js
 
 # Logs
 logs

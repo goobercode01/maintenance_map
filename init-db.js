@@ -8,13 +8,15 @@ database.exec(`
         title TEXT,
         lat REAL,
         long REAL,
-        description TEXT
+        description TEXT,
+        maintenanceFlag TEXT,
+        maintenanceDescription TEXT
         );
     `);
 
 database.exec(`
-    INSERT INTO locations (type, title, lat, long, description)
-    VALUES('Control Point', 'CP 216', 40.9078139, -73.7879556, 'Merge point between MNR and AMTK services')
+    INSERT INTO locations (type, title, lat, long, description, maintenanceFlag, maintenanceDescription)
+    VALUES('Control Point', 'CP 216', 40.9078139, -73.7879556, 'Merge point between MNR and AMTK services', 'No Maintenance', 'No maintenance.')
     `)
 
 database.close();
